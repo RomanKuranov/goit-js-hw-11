@@ -8,15 +8,12 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
-//*=========== створюємо екземпляр класу ==============
 const pixabayApiService = new PixabayApiService();
 const loadMoreBtn = new LoadMoreBtn({ selector: '.load-more', isHidden: true });
 
-//*=========== слухачі ==============
 form.addEventListener('submit', onSubmit);
 loadMoreBtn.button.addEventListener('click', fetchArticles);
 
-//*=========== сабміт ==============
 function onSubmit(e) {
   e.preventDefault();
 
@@ -32,17 +29,12 @@ function onSubmit(e) {
   fetchArticles().finally(() => form.reset());
 }
 
-//*=========== кнопка => добавити ще об'єктів на сторінку ==============
 async function fetchArticles() {
   loadMoreBtn.disable();
 
   try {
     const data = await pixabayApiService.getImage();
-    // деструктуризуємо з data
     const { hits, totalHits } = data;
-    // або
-    // const hits = data.hits;
-    // const totalHits = data.totalHits;
 
     if (hits.length === 0) throw new Error(onNothingFound());
 
@@ -65,7 +57,6 @@ async function fetchArticles() {
   }
 }
 
-//*=========== функції помилок ==============
 function onNothingFound(err) {
   loadMoreBtn.hide();
   Notiflix.Notify.failure(
@@ -79,17 +70,14 @@ function onNoMore() {
     "We're sorry, but you've reached the end of search results."
   );
 }
-//*=========== повідомлення ==============
 function onInfo(info) {
   Notiflix.Notify.success(`Hooray! We found ${info} images.`);
 }
 
-//*=========== очищаємо розмітку на сторінці ==============
 function clearNewList(markup) {
   gallery.innerHTML = '';
 }
-//*=========== пушимо розмітку на сторінку + Бібліотека SimpleLightbox ==============
-// цю функцію передає в onError(err) appendNewToList("текст повідомлення")
+
 function appendNewToList(markup) {
   gallery.insertAdjacentHTML('beforeend', markup);
 
@@ -100,7 +88,6 @@ function appendNewToList(markup) {
   }).refresh();
 }
 
-//*=========== Шаблон розмітки картки одного зображення для галереї ==============
 function createMarkup({
   webformatURL,
   largeImageURL,
